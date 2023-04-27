@@ -1,0 +1,29 @@
+GET http://localhost:3333/user/6448618855758db375278288
+
+###
+
+POST http://localhost:3333/user
+Content-Type: application/json
+
+ {
+    "username": "France4",
+    "password": "840191729"
+ }
+###
+
+PUT http://localhost:3333/user/6448618855758db375278288
+Content-Type: application/json
+
+ {
+    "username": "Keil Ricardo Reis Bambo",
+    "password": "12345"
+ }
+###
+
+DELETE  http://localhost:3333/user/6448618855758db375278288
+Content-Type: application/json
+
+ {
+    "username": "Carlitos"
+ }
+
