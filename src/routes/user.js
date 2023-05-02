@@ -2,33 +2,39 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 require("../models/User");
 const User = mongoose.model("Users");
+const { getUsers } = require("../controllers/UserControlller");
 
 
 router.post("/user", async (req, res) => {
+
     try {
         const newUser = {
-            username: req.body.username,
-            password: req.body.password
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            phoneNumber: req.body.phoneNumber,
+            password: req.body.password,
+            gender: req.body.gender,
         }
-        const username = req.body.username
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email: req.body.email });
 
         if (user) {
-            return res.status(400).send({ existingUser: "Usuario ja cadastrado, tente outro!" });
-        } else {
-            await User.create(newUser);
-            return res.status(201).json(newUser);
+            return res.status(400).json({msg: "Usuario ja cadastrado!!"})
         }
+
+        await User.create(newUser);
+        return res.status(201).json(newUser);
+
     } catch (err) {
         return res.status(500).send({ msg: err });
     }
 });
 
 
-router.get("/user/:id", async (req, res) => {
+router.get("/user/:email", async (req, res) => {
     try {
-        const id = req.params.id;
-        const user = await User.findOne({ _id: id });
+
+        const user = await User.findOne({ email: req.params.email });
 
         return res.status(200).json(user);
     } catch (err) {
@@ -36,7 +42,7 @@ router.get("/user/:id", async (req, res) => {
     }
 });
 
-
+/*
 router.get("/user", async (req, res) => {
     try {
         const users = await User.find();
@@ -46,13 +52,16 @@ router.get("/user", async (req, res) => {
         return res.status(404).send({ msg: "Não foi possível obter dados!" });
     }
 });
+*/
+
+router.get("/user", getUsers);
 
 
-router.put("/user/:id", async (req, res) => {
+router.put("/user/:username", async (req, res) => {
     try {
 
-        const id = req.params.id;
-        const user = await User.findOne({ _id: id })
+        const username = req.params.username;
+        const user = await User.findOne({ username: username })
 
         user.username = req.body.username;
         user.password = req.body.password;
@@ -67,11 +76,11 @@ router.put("/user/:id", async (req, res) => {
 });
 
 
-router.delete("/user/:id", async (req, res) => {
+router.delete("/user/:username", async (req, res) => {
     try {
 
-        const id = req.params.id;
-        const user = await User.findOne({ _id: id })
+        const username = req.params.username;
+        const user = await User.findOne({ username: username })
 
         user.status = false;
 

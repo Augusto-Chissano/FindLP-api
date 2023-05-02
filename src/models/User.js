@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 
 const User = mongoose.model("Users", {
-    username: {
+
+    email: {
+        type: String,
+        required: true
+    },
+    phoneNumber: {
         type: String,
         required: true
     },
@@ -9,16 +14,28 @@ const User = mongoose.model("Users", {
         type: String,
         required: true
     },
+    gender: {
+        type: String,
+        required: true
+    },
     status: {
         type: Boolean,
         default: true
     },
-    posts: Array,
-    createdAt: {
+    createdAt:{
         type: Date,
         default: Date.now()
     },
-    updatedAt: Date
+    updatedAt: Date,
+    firstName: {
+        type: String,
+        required: true
+    },
+    lastName: {
+        type: String,
+        required: true
+    }
+
 });
 
 module.exports = User;
