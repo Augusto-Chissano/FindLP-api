@@ -1,29 +1,29 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const router = require("./routes/user");
-const db = require("./database/db");
+const express = require('express')
+const cors = require('cors')
+const userRouter = require('./routes/user')
+const postRouter = require('./routes/post')
+const db = require('./database/db')
+
+
 const PORT = 3333;
-
-db();
-
-app.use(express.json());
+const app = express();
 
 app.use(cors({
     origin: "*"
 }
 ));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use(bodyParser.json());
+app.use('/uploads', express.static('src/uploads')); //Rota para imagens
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //Routes
 app.get("/", (req, res) => {
-    res.send("Welcome to FindLP");
+    res.send("<h1>Welcome to FindLP</h1>");
 })
-app.use(router);
+
+app.use(userRouter);
+app.use(postRouter);
 
 //Database connection and server...
 db().then(() => {

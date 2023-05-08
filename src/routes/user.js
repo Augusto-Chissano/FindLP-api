@@ -1,29 +1,27 @@
 const router = require("express").Router();
-const mongoose = require("mongoose");
-require("../models/User");
-const User = mongoose.model("Users");
-const { getUsers } = require("../controllers/UserControlller");
+const User = require("../models/User");
 
 
 router.post("/user", async (req, res) => {
 
     try {
-        const newUser = {
+        const user = new User( {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
             phoneNumber: req.body.phoneNumber,
             password: req.body.password,
             gender: req.body.gender,
-        }
-        const user = await User.findOne({ email: req.body.email });
+        })
 
-        if (user) {
+        const verificar = await User.findOne({ email: req.body.email });
+
+        if (verificar) {
             return res.status(400).json({msg: "Usuario ja cadastrado!!"})
         }
 
-        await User.create(newUser);
-        return res.status(201).json(newUser);
+        await user.save()
+        return res.status(201).json(user);
 
     } catch (err) {
         return res.status(500).send({ msg: err });
@@ -42,7 +40,6 @@ router.get("/user/:email", async (req, res) => {
     }
 });
 
-/*
 router.get("/user", async (req, res) => {
     try {
         const users = await User.find();
@@ -52,10 +49,6 @@ router.get("/user", async (req, res) => {
         return res.status(404).send({ msg: "Não foi possível obter dados!" });
     }
 });
-*/
-
-router.get("/user", getUsers);
-
 
 router.put("/user/:username", async (req, res) => {
     try {
