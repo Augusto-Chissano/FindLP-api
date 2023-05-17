@@ -8,10 +8,7 @@ const db = require('./database/db')
 const PORT = 3333;
 const app = express();
 
-app.use(cors({
-    origin: "*"
-}
-));
+app.use(cors());
 
 app.use('/uploads', express.static('src/uploads')); //Rota para imagens
 app.use(express.json());

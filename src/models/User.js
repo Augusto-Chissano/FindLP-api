@@ -1,8 +1,10 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 
-const User = mongoose.model("Users", {
 
-    email: { type: String, required: true },
+const userSchema = mongoose.Schema({
+
+    email: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
     password: { type: String, required: true },
     gender: { type: String, required: true },
@@ -11,12 +13,36 @@ const User = mongoose.model("Users", {
     updatedAt: { Date },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    posts: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Posts'
-    }
-    ]
+    isAdmin: { type: Boolean, default: false },
+    image: { type: String}
 
 });
 
-module.exports = User;
+//Transformando o password em um hash antes de ser salvo na base de dados
+userSchema.pre('save', function (next) {
+    if (this.isNew || this.isModified) {
+        bcrypt.hash(this.password, 10,
+            (err, hashedPassword) => {
+                if (err)
+                    next(err)
+                else {
+                    this.password = hashedPassword
+                    next()
+                }
+            }
+        )
+    }
+})
+
+//Metodo para verificar o password criptografado
+userSchema.methods.isCorrectPassword = function (password, cb) {
+    bcrypt.compare(password, this.password, function (err, same) {
+        if (err)
+            cb(err)
+        else {
+            cb(err, same)
+        }
+    })
+}
+
+module.exports = mongoose.model('User', userSchema)

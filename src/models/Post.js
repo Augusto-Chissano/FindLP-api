@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 //Criando o model para postagens
-const Post = mongoose.model('Posts', {
+const postSchema = mongoose.Schema({
 
     name: { type: String, required: true },
     age: { type: Number, required: true },
@@ -17,4 +17,4 @@ const Post = mongoose.model('Posts', {
 
 })
 
-module.exports = Post
+module.exports = mongoose.model('Posts', postSchema)
